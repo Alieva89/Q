@@ -1,130 +1,143 @@
 ﻿#include <iostream>
+#include <cstring>
 
 using namespace std;
 
-struct Spis2
-{
-	int info;
-	Spis2* next, * prev;
-} *beginB, * endB, * t;
+struct Queue {
+    int info;
+    Queue* next;
+} *beginQueue, * endQueue;
 
-void Create_Spis2(Spis2** b, Spis2** e, int in);
-void Add_Spis2(int kod, Spis2** b, Spis2** e, int in);
-void View_Spis2(int kod, Spis2* t);
+
+Queue* InQueue(Queue* p, int in) {
+    Queue* t = new Queue;
+    t->info = in;
+    t->next = p;
+    return t;
+}
+
+
+void viewQueue(Queue* p) {
+    Queue* t = p;
+    while (t != NULL) {
+        cout << " " << t->info << endl;
+        t = t->next;
+    }
+}
+
+
+void delQueue(Queue** p) {
+    while (*p != NULL) {
+        endQueue = *p;
+        *p = (*p)->next;
+        delete endQueue;
+    }
+}
+
+void Sort_p(Queue* p)
+{
+    Queue* t = NULL, * t1;
+    int r;
+
+    do
+    {
+        for (t1 = p; t1->next != t; t1 = t1->next)
+
+            if (t1->info > t1->next->info)
+            {
+                r = t1->info;
+                t1->info = t1->next->info;
+                t1->next->info = r;
+            }
+        t = t1;
+    } while (p->next != t);
+}
+
 
 int main()
 {
-	int i, in;
-	int answer = -1; 
-	int answer2 = -1;
-	char Str[2][10] = { "Begin", "End" };
+    setlocale(LC_ALL, "Russian");
 
-	while (true)
-	{
-		cout << "\n\tCreate - 1" <<
-			"\n\tAdd Stack - 2" <<
-			"\n\tView - 3" <<
-			"\n\tDelete - 4" <<
-			"\n\tEXIT - 0" << endl;
+    int i, in, n, command;
 
-		cin >> answer;
+    while (true) {
+        system("cls");
 
-		switch (answer)
-		{		
-		default:
-			cout << "error" << endl;
-			break;
-		case 1: 
-			if (beginB != NULL)
-				cout << "Memory has cleared" << endl;
+        cout << "\n1. Создать очередь."
+            "\n2. Добавить элементы в очередь."
+            "\n3. Посмотреть очередь."
+            "\n4. ХАЧУ ЧТОБ СПИСРК СОРТИРОВАЛСЯ."
+            "\n5. Удалить очередь."
+            "\n0. Выход.\n" << endl;
+        cin >> command;
+        switch (command) {
+        default:
+            cout << "Неизвестная команда" << endl;
+            break;
 
-			cout << "Begin Info = ";
-			cin >> in;
-			Create_Spis2(&beginB, &endB, in);
+        case 1: case 2:
 
-			cout << "Create Begin = " << beginB->info << endl;
-			break;
+            if (command == 1 && beginQueue != NULL) {
+                cout << "Очистка памяти" << endl;
 
-		case 2:
-			cout << "Info = "; 
-			cin >> in;
-			Add_Spis2(answer2, &beginB, &endB, in);
+                system("pause");
+                break;
+            }
+            cout << "Введите кол-во элементов: ";
+            cin >> n;
+            for (i = 1; i <= n; i++) {
+                in = rand() % 100 - 60;
+                beginQueue = InQueue(beginQueue, in);
+            }
+            if (command == 1)
+                cout << "Создано " << n << " эл." << endl;
+            else cout << "Добавлено " << n << " эл." << endl;
 
-			if (answer2 == 0)
-				t = beginB;
-			else
-				t = endB;
+            system("pause");
+            break;
 
-			cout << "Add to " << Str[answer2] << "  " << t->info << endl;
-			break;
+        case 3:
+            if (!beginQueue) {
+                cout << "Очередь пуста!" << endl;
 
-		case 3:
-			if (!beginB)
-			{
-				cout << "Stack Pyst!" << endl;
-				break;
-			}
+                system("pause");
+                break;
+            }
 
-			cout << "View Begin-0,View End-1:";
-			cin >> answer2;
+            cout << "\n---Queue---" << endl;
+            viewQueue(beginQueue);
 
-			if (answer2 == 0)
-			{
-				t = beginB;
-				cout << "--Begin --" << endl;
-			}
-			else
-			{
-				t = endB;
-				cout << "---End --" << endl;
-			}
+            system("pause");
+            break;
 
-			View_Spis2(answer2, t);
-			break;		
+        case 4:
+            if (!beginQueue) {
+                cout << " пуст!" << endl;
 
-		case 0:
-			return 0;
-			break;
-		}
-	}
-}
+                system("pause");
+                break;
+            }
 
-void Create_Spis2(Spis2** b, Spis2** e, int in)
-{
-	t = new Spis2;
-	t->info = in;
-	t->next = t->prev = NULL; 
-	*b = *e = t;
-}
+            Sort_p(beginQueue);
+            
+            system("pause");
+            break;
 
-void Add_Spis2(int kod, Spis2** b, Spis2** e, int in) 
-{
-	t = new Spis2; 
-	t->info = in; 
-	if (kod == 0) 
-	{ 
-		t->prev = NULL; t->next = *b;
-		(*b)->prev = t; 
-		*b = t; 
-	} 
-	else 
-	{
-		t->next = NULL;
-		t->prev = *e;
-		(*e)->next = t; 
-		*e = t; 
-	} 
-}
+        case 5:
+            delQueue(&beginQueue);
+            cout << "Память чиста!" << endl;
 
-void View_Spis2(int kod, Spis2* t) 
-{
-	while (t != NULL) 
-	{
-		cout<< t->info<< endl;
+            system("pause");
+            break;
 
-		if(kod== 0) 
-			t = t->next;
-		else
-			t= t->prev;
-	}
+        case 0:
+            if (beginQueue != NULL)
+                delQueue(&beginQueue);
+
+            system("pause");
+            return 0;
+        }
+    }
+
+
 }
